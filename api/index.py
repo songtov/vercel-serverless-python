@@ -3,6 +3,7 @@ import requests
 import os
 from datetime import datetime
 from dotenv import load_dotenv
+import json
 
 # Load environment variables
 load_dotenv()
@@ -58,25 +59,38 @@ class handler(BaseHTTPRequestHandler):
                 try:
                     data = response.json()
                     filtered_rain_data = filter_rain_data(data['response']['body']['items']['item'])
-                    result = "Rains today" if rains_today(filtered_rain_data) else "No rains today"
+                    result = {
+                        "status": "success",
+                        "rains_today": rains_today(filtered_rain_data),
+                        "message": "Rains today" if rains_today(filtered_rain_data) else "No rains today"
+                    }
                     
                     self.send_response(200)
-                    self.send_header('Content-type', 'text/plain')
+                    self.send_header('Content-type', 'application/json')
                     self.end_headers()
-                    self.wfile.write(result.encode('utf-8'))
+                    return json.dumps(result)
                 except ValueError as e:
                     self.send_response(500)
-                    self.send_header('Content-type', 'text/plain')
+                    self.send_header('Content-type', 'application/json')
                     self.end_headers()
-                    self.wfile.write(f'Error parsing JSON: {str(e)}'.encode('utf-8'))
+                    return json.dumps({
+                        "status": "error",
+                        "message": f'Error parsing JSON: {str(e)}'
+                    })
             else:
                 self.send_response(response.status_code)
-                self.send_header('Content-type', 'text/plain')
+                self.send_header('Content-type', 'application/json')
                 self.end_headers()
-                self.wfile.write(f'Weather API request failed with status code: {response.status_code}'.encode('utf-8'))
+                return json.dumps({
+                    "status": "error",
+                    "message": f'Weather API request failed with status code: {response.status_code}'
+                })
                 
         except requests.exceptions.RequestException as e:
             self.send_response(500)
-            self.send_header('Content-type', 'text/plain')
+            self.send_header('Content-type', 'application/json')
             self.end_headers()
-            self.wfile.write(f'Request failed: {str(e)}'.encode('utf-8'))
+            return json.dumps({
+                "status": "error",
+                "message": f'Request failed: {str(e)}'
+            })
