@@ -4,7 +4,7 @@ from fastapi import FastAPI, Request
 app = FastAPI(title="FastAPI on Vercel")
 
 # GET with query parameters
-@app.get("/hello")
+@app.get("/")
 def hello(name: str = "World"):
     return {"message": f"Hello, {name}!"}
 
