@@ -1,3 +1,6 @@
 {
-  "redirects": [{ "source": "/", "destination": "/api" }]
+  "redirects": [{ "source": "/", "destination": "/api" }],
+  "routes": [
+    { "src": "/api/v1/(.*)", "dest": "/api/main.py" }
+  ]
 }
