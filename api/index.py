@@ -36,7 +36,7 @@ class handler(BaseHTTPRequestHandler):
             return
 
         # Base URL for the weather API
-        base_url = "https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst"
+        base_url = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst"
         
         # Parameters for the API request
         params = {
