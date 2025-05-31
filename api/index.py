@@ -48,6 +48,7 @@ class handler(BaseHTTPRequestHandler):
             'nx': '63',
             'ny': '126'
         }
+        
 
         try:
             # Make the API request
