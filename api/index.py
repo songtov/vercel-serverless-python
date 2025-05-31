@@ -68,29 +68,31 @@ class handler(BaseHTTPRequestHandler):
                     self.send_response(200)
                     self.send_header('Content-type', 'application/json')
                     self.end_headers()
-                    return json.dumps(result)
+                    self.wfile.write(json.dumps(result).encode('utf-8'))
+
+                    
                 except ValueError as e:
                     self.send_response(500)
                     self.send_header('Content-type', 'application/json')
                     self.end_headers()
-                    return json.dumps({
+                    self.wfile.write(json.dumps({
                         "status": "error",
                         "message": f'Error parsing JSON: {str(e)}'
-                    })
+                    }).encode('utf-8'))
             else:
                 self.send_response(response.status_code)
                 self.send_header('Content-type', 'application/json')
                 self.end_headers()
-                return json.dumps({
+                self.wfile.write(json.dumps({
                     "status": "error",
                     "message": f'Weather API request failed with status code: {response.status_code}'
-                })
+                }).encode('utf-8'))
                 
         except requests.exceptions.RequestException as e:
             self.send_response(500)
             self.send_header('Content-type', 'application/json')
             self.end_headers()
-            return json.dumps({
+            self.wfile.write(json.dumps({
                 "status": "error",
                 "message": f'Request failed: {str(e)}'
-            })
+            }).encode('utf-8'))
